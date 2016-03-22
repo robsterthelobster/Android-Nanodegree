@@ -54,3 +54,4 @@ project.properties
 build/
 *.gradle
 Project1/app/build.gradle
+Project1/app/build.gradle
