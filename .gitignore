@@ -6,9 +6,11 @@
 .DS_Store
 /build
 /captures
-
+build/
+*.gradle
 .gradle
 .DS_Store
+Project1/app/build.gradle
 
 # built application files
 *.apk
@@ -50,3 +52,5 @@ project.properties
 ##Gradle-based build
 .gradle
 build/
+*.gradle
+Project1/app/build.gradle
