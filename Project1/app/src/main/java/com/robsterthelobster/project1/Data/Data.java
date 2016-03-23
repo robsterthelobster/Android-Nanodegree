@@ -1,13 +1,13 @@
-package com.robsterthelobster.project1;
+package com.robsterthelobster.project1.Data;
 
 /**
  * Created by robin on 3/21/2016.
  */
 
-final class Data {
+public final class Data {
     static final String BASE = "http://i.imgur.com/";
     static final String EXT = ".jpg";
-    static final String[] URLS = {
+    public static final String[] URLS = {
             BASE + "CqmBjo5" + EXT, BASE + "zkaAooq" + EXT, BASE + "0gqnEaY" + EXT,
             BASE + "9gbQ7YR" + EXT, BASE + "aFhEEby" + EXT, BASE + "0E2tgV7" + EXT,
             BASE + "P5JLfjk" + EXT, BASE + "nz67a4F" + EXT, BASE + "dFH34N5" + EXT,

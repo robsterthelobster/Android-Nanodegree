@@ -7,4 +7,6 @@
     android:numColumns="@integer/column_count"
     android:scrollbarStyle="insideOverlay"
     android:scrollbars="none"
-    android:listSelector="@null" />
+    android:listSelector="@null"
+
+    />

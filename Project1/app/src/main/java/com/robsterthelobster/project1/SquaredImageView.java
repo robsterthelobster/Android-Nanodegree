@@ -3,6 +3,7 @@ package com.robsterthelobster.project1;
 /**
  * Created by robin on 3/21/2016.
  * Based on picasso sample: https://github.com/square/picasso/
+ * Custom view for square images
  */
 
 import android.content.Context;
