@@ -1,12 +1,27 @@
 package com.robsterthelobster.project1;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import com.robsterthelobster.project1.Data.DbAdapter;
+import com.robsterthelobster.project1.Data.MovieContract;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +33,10 @@ final class ImageAdapter extends BaseAdapter {
 
     public ImageAdapter(Context context) {
         this.context = context;
-
-        DbAdapter db = new DbAdapter(context);
-        db.updateMovies();
-
-        urls.addAll(db.getPosterPaths());
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
         PosterImageView view = (PosterImageView) convertView;
         if (view == null) {
             view = new PosterImageView(context);
@@ -45,6 +56,14 @@ final class ImageAdapter extends BaseAdapter {
                 .into(view);
 
         return view;
+    }
+
+    public void clear(){
+        urls.clear();
+    }
+
+    public void add(ArrayList<String> toAdd){
+        urls.addAll(toAdd);
     }
 
     @Override public int getCount() {
