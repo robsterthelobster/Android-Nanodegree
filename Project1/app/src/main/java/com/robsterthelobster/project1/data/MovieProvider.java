@@ -66,8 +66,8 @@ public class MovieProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE: {
-                System.out.println("INSERT TEST");
-                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+                // replace movie data, mainly popularity and votes
+                long _id = db.insertWithOnConflict(MovieContract.MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 if ( _id > 0 )
                     returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
                 else
@@ -121,32 +121,6 @@ public class MovieProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
-    }
-
-    @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case MOVIE:
-                db.beginTransaction();
-                int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
-            default:
-                return super.bulkInsert(uri, values);
-        }
     }
 
     static UriMatcher buildUriMatcher(){

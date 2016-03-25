@@ -21,22 +21,21 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_TABLE =
                 "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
                         MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        MovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL " +
-//                        MovieContract.MovieEntry.COLUMN_ADULT + " INTEGER NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL," +
-//                        MovieContract.MovieEntry.COLUMN_ID + " INTEGER NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_POPULARITY + " REAL NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_VOTE_COUNT + " INTEGER NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_VIDEO + " INTEGER NOT NULL, " +
-//                        MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL" +
+                        MovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_ADULT + " INTEGER NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL," +
+                        MovieContract.MovieEntry.COLUMN_ID + " INTEGER UNIQUE NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_POPULARITY + " REAL NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_VOTE_COUNT + " INTEGER NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_VIDEO + " INTEGER NOT NULL, " +
+                        MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL" +
                         " );";
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
-
     }
 
     @Override

@@ -2,15 +2,10 @@ package com.robsterthelobster.project1;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 
-import com.robsterthelobster.project1.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -62,19 +57,6 @@ final class ImageAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        final String BASE = "http://image.tmdb.org/t/p/w185/";
-        String path = BASE + cursor.getString(1);
-
-        Log.v("Adapter ", path);
-
-        Picasso.with(context) //
-                .load(path) //
-                .placeholder(R.drawable.dog) //
-                .error(R.drawable.dog) //
-                .fit() //
-                .tag(context) //
-                .into((ImageView) view);
-
     }
 
     @Override
@@ -85,14 +67,18 @@ final class ImageAdapter extends CursorAdapter {
     }
 
     private void addToUrls(Cursor cursor){
+        urls.clear();
         if(cursor!=null){
-            cursor.moveToFirst();
-            while(!cursor.isLast()){
+            while (cursor.moveToNext()){
                 final String BASE = "http://image.tmdb.org/t/p/w185/";
-                String path = BASE + cursor.getString(1);
-                System.out.println(path);
+                String path = BASE + cursor.getString(MovieFragment.COL_POSTER);
+
+                System.out.println("OGtitle: " + cursor.getString(MovieFragment.COL_OG_TITLE));
+                System.out.println("title: " + cursor.getString(MovieFragment.COL_TITLE));
+                System.out.println("path: " + path);
+                System.out.println(cursor.getString(MovieFragment.COL_POPULARITY));
+
                 urls.add(path);
-                cursor.moveToNext();
             }
         }
     }

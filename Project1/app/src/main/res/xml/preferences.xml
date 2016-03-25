@@ -2,14 +2,18 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <PreferenceCategory
-        android:title="test/inline_preferences">
+        android:title="@string/pref_category_sort">
 
-        <CheckBoxPreference
-            android:key="checkbox_preference"
-            android:title="test/title_checkbox_preference"
-            android:summary="test/summary_checkbox_preference" />
+        <ListPreference
+            android:title="@string/pref_title_sort"
+            android:key="@string/pref_sort_key"
+            android:defaultValue="@string/pref_sort_popular"
+            android:entryValues="@array/pref_sort_options"
+            android:entries="@array/pref_sort_values"/>
 
     </PreferenceCategory>
 

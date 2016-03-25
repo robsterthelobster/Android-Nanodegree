@@ -1,23 +1,7 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.robsterthelobster.project1;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -35,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by robin on 3/24/2016.
@@ -126,26 +109,47 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
         try {
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(MDB_LIST);
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(movieArray.length());
+            String boolToStr;
 
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject movie = movieArray.getJSONObject(i);
                 String poster_path = movie.getString(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
 
+                boolToStr = movie.getString(MovieContract.MovieEntry.COLUMN_ADULT);
+                int adult = (boolToStr == "true") ? 1 : 0;
+
+                String overview = movie.getString(MovieContract.MovieEntry.COLUMN_OVERVIEW);
+                String date = movie.getString(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+                int id = movie.getInt(MovieContract.MovieEntry.COLUMN_ID);
+                String og_title = movie.getString(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE);
+                String language = movie.getString(MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE);
+                String  title = movie.getString(MovieContract.MovieEntry.COLUMN_TITLE);
+                String backdrop = movie.getString(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH);
+                double popularity = movie.getDouble(MovieContract.MovieEntry.COLUMN_POPULARITY);
+                int vote = movie.getInt(MovieContract.MovieEntry.COLUMN_VOTE_COUNT);
+
+                boolToStr = movie.getString(MovieContract.MovieEntry.COLUMN_VIDEO);
+                int video = (boolToStr == "true") ? 1 : 0;
+
+                double average = movie.getDouble(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE);
+
                 ContentValues movieValues = new ContentValues();
                 movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster_path);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster_path);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_ADULT, adult);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, overview);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, date);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_ID, id);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, og_title);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE, language);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, backdrop);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_POPULARITY, popularity);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_COUNT, vote);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_VIDEO, video);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, average);
 
-                cVVector.add(movieValues);
-            }
-
-            int inserted = 0;
-            // add to database
-            if ( cVVector.size() > 0 ) {
-                ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                cVVector.toArray(cvArray);
-                inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
-
-                Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
+                mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);

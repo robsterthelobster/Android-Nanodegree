@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:numColumns="@integer/column_count"
         android:scrollbarStyle="outsideOverlay"
-        android:paddingTop="?android:attr/actionBarSize"
         android:clipToPadding="false"
         android:scrollbars="none"
         android:listSelector="@null"

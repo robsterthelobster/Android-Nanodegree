@@ -2,13 +2,11 @@ package com.robsterthelobster.project1;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,18 +16,6 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.robsterthelobster.project1.data.MovieContract;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by robin on 3/24/2016.
@@ -86,12 +72,39 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry._ID,
-            MovieContract.MovieEntry.COLUMN_POSTER_PATH
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_ADULT,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_ID,
+            MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+            MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE,
+            MovieContract.MovieEntry.COLUMN_TITLE ,
+            MovieContract.MovieEntry.COLUMN_BACKDROP_PATH,
+            MovieContract.MovieEntry.COLUMN_POPULARITY,
+            MovieContract.MovieEntry.COLUMN_VOTE_COUNT,
+            MovieContract.MovieEntry.COLUMN_VIDEO,
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE
     };
+
+    public static int COL_ID = 0;
+    public static int COL_POSTER = 1;
+    public static int COL_ADULT = 2;
+    public static int COL_OVERVIEW = 3;
+    public static int COL_RELEASE = 4;
+    public static int COL_MOVIE_ID = 5;
+    public static int COL_OG_TITLE = 6;
+    public static int COL_LANGUAGE = 7;
+    public static int COL_TITLE = 8;
+    public static int COL_BACKDROP = 9;
+    public static int COL_POPULARITY = 10;
+    public static int COL_VOTE_COUNT = 11;
+    public static int COL_VIDEO = 12;
+    public static int COL_VOTE_AVERAGE = 13;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        //String sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+        String sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
         Uri movieURI = MovieContract.MovieEntry.CONTENT_URI;
 
         return new CursorLoader(getActivity(),
@@ -99,7 +112,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 MOVIE_COLUMNS,
                 null,
                 null,
-                null);
+                sortOrder);
     }
 
     @Override
