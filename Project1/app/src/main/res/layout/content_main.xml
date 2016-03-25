@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.robsterthelobster.project1.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context=".MainActivity$MovieFragment">
 
     <GridView
         android:id="@+id/grid_view"

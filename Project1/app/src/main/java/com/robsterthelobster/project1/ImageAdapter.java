@@ -1,37 +1,29 @@
 package com.robsterthelobster.project1;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
+import android.widget.ImageView;
 
-import com.robsterthelobster.project1.Data.MovieContract;
+import com.robsterthelobster.project1.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 
-final class ImageAdapter extends BaseAdapter {
+final class ImageAdapter extends CursorAdapter {
     private final Context context;
     private final List<String> urls = new ArrayList<String>();
 
-    public ImageAdapter(Context context) {
+    public ImageAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
         this.context = context;
     }
 
@@ -58,12 +50,51 @@ final class ImageAdapter extends BaseAdapter {
         return view;
     }
 
-    public void clear(){
-        urls.clear();
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+        PosterImageView view =  new PosterImageView(context);
+        view.setScaleType(CENTER_CROP);
+
+        return view;
     }
 
-    public void add(ArrayList<String> toAdd){
-        urls.addAll(toAdd);
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+
+        final String BASE = "http://image.tmdb.org/t/p/w185/";
+        String path = BASE + cursor.getString(1);
+
+        Log.v("Adapter ", path);
+
+        Picasso.with(context) //
+                .load(path) //
+                .placeholder(R.drawable.dog) //
+                .error(R.drawable.dog) //
+                .fit() //
+                .tag(context) //
+                .into((ImageView) view);
+
+    }
+
+    @Override
+    public Cursor swapCursor(Cursor cursor){
+        Cursor c = super.swapCursor(cursor);
+        addToUrls(cursor);
+        return c;
+    }
+
+    private void addToUrls(Cursor cursor){
+        if(cursor!=null){
+            cursor.moveToFirst();
+            while(!cursor.isLast()){
+                final String BASE = "http://image.tmdb.org/t/p/w185/";
+                String path = BASE + cursor.getString(1);
+                System.out.println(path);
+                urls.add(path);
+                cursor.moveToNext();
+            }
+        }
     }
 
     @Override public int getCount() {
@@ -77,4 +108,5 @@ final class ImageAdapter extends BaseAdapter {
     @Override public long getItemId(int position) {
         return position;
     }
+
 }
