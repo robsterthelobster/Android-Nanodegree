@@ -12,8 +12,8 @@
             android:title="@string/pref_title_sort"
             android:key="@string/pref_sort_key"
             android:defaultValue="@string/pref_sort_popular"
-            android:entryValues="@array/pref_sort_options"
-            android:entries="@array/pref_sort_values"/>
+            android:entryValues="@array/pref_sort_values"
+            android:entries="@array/pref_sort_options"/>
 
     </PreferenceCategory>
 

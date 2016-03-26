@@ -40,7 +40,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.content_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
         gv = (GridView) rootView.findViewById(R.id.grid_view);
         mImageAdapter = new ImageAdapter(getActivity(), null, 0);
