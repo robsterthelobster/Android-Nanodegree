@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String FRAGMENT_MOVIE_TAG = "MOVIE_FRAG_TAG";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                   .add(R.id.container, new MovieFragment()).commit();
+                   .replace(R.id.container, new MovieFragment(), FRAGMENT_MOVIE_TAG).commit();
         }
     }
 
@@ -39,5 +41,14 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        MovieFragment frag = (MovieFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_MOVIE_TAG);
+        if(frag != null){
+            frag.onSortingChanged();
+        }
     }
 }

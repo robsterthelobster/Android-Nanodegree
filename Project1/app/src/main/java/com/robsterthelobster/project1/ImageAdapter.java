@@ -36,8 +36,8 @@ final class ImageAdapter extends CursorAdapter {
         // Trigger the download of the URL asynchronously into the image view.
         Picasso.with(context) //
                 .load(url) //
-                .placeholder(R.drawable.dog) //
-                .error(R.drawable.dog) //
+                .placeholder(R.drawable.no_poster_w185) //
+                //.error(R.drawable.dog) //
                 .fit() //
                 .tag(context) //
                 .into(view);
@@ -73,10 +73,10 @@ final class ImageAdapter extends CursorAdapter {
                 final String BASE = "http://image.tmdb.org/t/p/w185/";
                 String path = BASE + cursor.getString(MovieFragment.COL_POSTER);
 
-                System.out.println("OGtitle: " + cursor.getString(MovieFragment.COL_OG_TITLE));
-                System.out.println("title: " + cursor.getString(MovieFragment.COL_TITLE));
-                System.out.println("path: " + path);
-                System.out.println(cursor.getString(MovieFragment.COL_POPULARITY));
+//                System.out.println("OGtitle: " + cursor.getString(MovieFragment.COL_OG_TITLE));
+//                System.out.println("title: " + cursor.getString(MovieFragment.COL_TITLE));
+//                System.out.println("path: " + path);
+//                System.out.println(cursor.getString(MovieFragment.COL_POPULARITY));
 
                 urls.add(path);
             }

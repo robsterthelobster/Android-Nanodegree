@@ -14,6 +14,9 @@ public class MovieProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
+    // number of movies, as provided by the API
+    // can be reduced to any even number to maintain grid
+    private static final String numOfMovies = "20";
     static final int MOVIE = 100;
 
     @Override
@@ -35,7 +38,8 @@ public class MovieProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        sortOrder
+                        sortOrder,
+                        numOfMovies
                 );
                 break;
             }

@@ -34,6 +34,12 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
 
     @Override
     protected ArrayList<String> doInBackground(String... params) {
+
+        // no sorting method
+        if(params.length == 0){
+            return null;
+        }
+
         ArrayList<String> paths = null;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -45,15 +51,16 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
 
             final String MOVIE_URL = "http://api.themoviedb.org/3/movie/";
             final String KEY_PARAM = "api_key";
+            String sort = params[0];
 
             Uri builtUri = Uri.parse(MOVIE_URL).buildUpon()
-                    .appendPath("popular") // need to pull from prefs
+                    .appendPath(sort) // need to pull from prefs
                     .appendQueryParameter(KEY_PARAM, BuildConfig.MOVIEDB_API_KEY)
                     .build();
 
             URL url = new URL(builtUri.toString());
 
-            Log.v(LOG_TAG, "URL: " + url.toString());
+            //Log.v(LOG_TAG, "URL: " + url.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");

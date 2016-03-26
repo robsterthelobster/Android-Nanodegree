@@ -1,8 +1,10 @@
 package com.robsterthelobster.project1;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.robsterthelobster.project1.data.MovieContract;
 
@@ -40,12 +43,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
-        gv = (GridView) rootView.findViewById(R.id.grid_view);
         mImageAdapter = new ImageAdapter(getActivity(), null, 0);
+
+        View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
+        gv = (GridView) rootView.findViewById(R.id.grid_view);
         gv.setAdapter(mImageAdapter);
         gv.setOnScrollListener(new ScrollListener(getActivity()));
+
         updateMovies();
         return rootView;
     }
@@ -56,8 +61,15 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        updateMovies();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_refresh) {
             updateMovies();
             return true;
@@ -65,9 +77,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         return super.onOptionsItemSelected(item);
     }
 
+    public void onSortingChanged(){
+        updateMovies();
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+    }
+
     private void updateMovies(){
         FetchMovieTask task = new FetchMovieTask(getActivity());
-        task.execute();
+        task.execute(Utility.getSortType(getActivity()));
     }
 
     private static final String[] MOVIE_COLUMNS = {
@@ -104,7 +121,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+        String sortOrder = "";
+        String sort = Utility.getSortType(getActivity());
+        if(sort.equals(getString(R.string.pref_sort_popular))){
+            sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+        }else if(sort.equals(getString(R.string.pref_sort_top))){
+            sortOrder = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        }
+
         Uri movieURI = MovieContract.MovieEntry.CONTENT_URI;
 
         return new CursorLoader(getActivity(),
