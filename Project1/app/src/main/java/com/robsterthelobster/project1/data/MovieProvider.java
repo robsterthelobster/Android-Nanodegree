@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Movie;
 import android.net.Uri;
 
 /**
@@ -18,6 +19,7 @@ public class MovieProvider extends ContentProvider {
     // can be reduced to any even number to maintain grid
     private static final String numOfMovies = "20";
     static final int MOVIE = 100;
+    static final int MOVIE_WITH_ID = 101;
 
     @Override
     public boolean onCreate() {
@@ -43,10 +45,32 @@ public class MovieProvider extends ContentProvider {
                 );
                 break;
             }
+            case MOVIE_WITH_ID:
+            {
+                System.out.println("movie with id");
+                return getMovieWithID(uri, projection, sortOrder);
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
+    }
+
+    private Cursor getMovieWithID(Uri uri, String[] projection, String sortOrder){
+
+        String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
+        String[] selectionArgs = new String[]{MovieContract.MovieEntry.getIdFromUri(uri)};
+
+        Cursor retCursor = mOpenHelper.getReadableDatabase().query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
         return retCursor;
     }
 
@@ -57,6 +81,8 @@ public class MovieProvider extends ContentProvider {
         switch (match) {
             case MOVIE:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
+            case MOVIE_WITH_ID:
+                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -132,6 +158,7 @@ public class MovieProvider extends ContentProvider {
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
+        matcher.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
 
         return matcher;
     }

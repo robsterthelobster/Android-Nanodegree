@@ -1,10 +1,9 @@
 package com.robsterthelobster.project1;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,8 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.robsterthelobster.project1.data.MovieContract;
 
@@ -24,9 +23,19 @@ import com.robsterthelobster.project1.data.MovieContract;
  * Created by robin on 3/24/2016.
  */
 public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
     private ImageAdapter mImageAdapter;
     private static final int MOVIE_LOADER = 0;
     GridView gv;
+    private OnItemClickedListener mCallback;
+
+    public interface OnItemClickedListener {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri movieUri);
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,9 +58,25 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
         gv = (GridView) rootView.findViewById(R.id.grid_view);
         gv.setAdapter(mImageAdapter);
-        gv.setOnScrollListener(new ScrollListener(getActivity()));
 
-        updateMovies();
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                Uri uri = MovieContract.MovieEntry.buildMovieWithID(cursor.getInt(COL_ID));
+
+                System.out.println(uri.toString());
+
+                try{
+                    mCallback = (OnItemClickedListener) getActivity();
+                    mCallback.onItemSelected(uri);
+                }catch (ClassCastException e) {
+                    throw new ClassCastException(getActivity().toString()
+                            + " must implement OnItemClickedListener");
+                }
+            }
+        });
         return rootView;
     }
 
@@ -87,37 +112,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         task.execute(Utility.getSortType(getActivity()));
     }
 
-    private static final String[] MOVIE_COLUMNS = {
+    private static final String[] projection = {
             MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_POSTER_PATH,
-            MovieContract.MovieEntry.COLUMN_ADULT,
-            MovieContract.MovieEntry.COLUMN_OVERVIEW,
-            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
-            MovieContract.MovieEntry.COLUMN_ID,
-            MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
-            MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE,
-            MovieContract.MovieEntry.COLUMN_TITLE ,
-            MovieContract.MovieEntry.COLUMN_BACKDROP_PATH,
-            MovieContract.MovieEntry.COLUMN_POPULARITY,
-            MovieContract.MovieEntry.COLUMN_VOTE_COUNT,
-            MovieContract.MovieEntry.COLUMN_VIDEO,
-            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE
+            MovieContract.MovieEntry.COLUMN_ID
     };
-
-    public static int COL_ID = 0;
-    public static int COL_POSTER = 1;
-    public static int COL_ADULT = 2;
-    public static int COL_OVERVIEW = 3;
-    public static int COL_RELEASE = 4;
-    public static int COL_MOVIE_ID = 5;
-    public static int COL_OG_TITLE = 6;
-    public static int COL_LANGUAGE = 7;
-    public static int COL_TITLE = 8;
-    public static int COL_BACKDROP = 9;
-    public static int COL_POPULARITY = 10;
-    public static int COL_VOTE_COUNT = 11;
-    public static int COL_VIDEO = 12;
-    public static int COL_VOTE_AVERAGE = 13;
+    // column poster is stored in
+    public static final int COL_POSTER = 1;
+    public static final int COL_ID = 2;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -133,7 +135,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         return new CursorLoader(getActivity(),
                 movieURI,
-                MOVIE_COLUMNS,
+                projection,
                 null,
                 null,
                 sortOrder);

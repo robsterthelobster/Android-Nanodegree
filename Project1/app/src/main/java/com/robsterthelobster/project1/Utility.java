@@ -17,4 +17,8 @@ public class Utility {
                 context.getString(R.string.pref_sort_popular));
         return sort;
     }
+
+    public static String getRatingStr(String rating) {
+        return rating + "/10";
+    }
 }
