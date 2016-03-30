@@ -47,7 +47,6 @@ public class MovieProvider extends ContentProvider {
             }
             case MOVIE_WITH_ID:
             {
-                System.out.println("movie with id");
                 return getMovieWithID(uri, projection, sortOrder);
             }
             default:

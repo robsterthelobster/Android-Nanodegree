@@ -122,6 +122,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mTitleView.setText(data.getString(COL_OG_TITLE));
             mRatingView.setText(Utility.getRatingStr(data.getString(COL_VOTE_AVERAGE)));
             mOverviewView.setText(data.getString(COL_OVERVIEW));
+            mReleaseDateView.setText(Utility.formatDateDMY(data.getString(COL_RELEASE)));
         }
     }
 

@@ -66,8 +66,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 Uri uri = MovieContract.MovieEntry.buildMovieWithID(cursor.getInt(COL_ID));
 
-                System.out.println(uri.toString());
-
                 try{
                     mCallback = (OnItemClickedListener) getActivity();
                     mCallback.onItemSelected(uri);

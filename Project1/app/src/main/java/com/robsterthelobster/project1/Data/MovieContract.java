@@ -51,7 +51,6 @@ public class MovieContract {
         }
 
         public static String getIdFromUri(Uri uri) {
-            System.out.println(uri.getPathSegments().get(1));
             return uri.getPathSegments().get(1);
         }
     }
