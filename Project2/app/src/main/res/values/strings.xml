@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Popular Movies v2</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- SETTINGS SORT PREF SCREEN  -->
+    <string name="pref_sort_summary">Select how movies are sorted</string>
+
+    <string name="pref_sort_label_popular">Popular</string>
+    <string name="pref_sort_label_top">Top Rated</string>
+
+    <string name="pref_sort_popular">popular</string>
+    <string name="pref_sort_top">top_rated</string>
+
+    <string name="pref_category_sort">Grid Layout</string>
+    <string name="pref_title_sort">Sort by</string>
+
+    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_sort_key" translatable="false">pref_sort_key</string>
+    <string name="title_activity_detail">MovieDetail</string>
+
+
+</resources>
