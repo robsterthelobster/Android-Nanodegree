@@ -1,6 +1,5 @@
 package com.robsterthelobster.project2;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,12 +80,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.moviefragment, menu);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        updateMovies();
     }
 
     @Override

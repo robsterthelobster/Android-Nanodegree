@@ -7,13 +7,29 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_title_text"
-            android:background="@color/colorAccent"
-            android:textAppearance="?android:textAppearanceLargeInverse"
-            android:padding="16dp"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@color/colorAccent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_title_text"
+                android:textAppearance="?android:textAppearanceLargeInverse"
+                android:layout_weight="1"/>
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:button="@drawable/favorites_selector"
+                android:id="@+id/favorite_check"
+                android:layout_weight="8" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,11 +47,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="16dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/detail_date_text"
-                    android:textAppearance="?android:textAppearanceMedium"/>
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:paddingTop="16dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -59,7 +59,6 @@ public class SettingsActivity extends AppCompatActivity{
 
                 // Set summary to be the user-description for the selected value
                 sortPref.setSummary(sortPref.getEntry());
-
             }
         }
     }
