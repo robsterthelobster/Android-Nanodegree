@@ -10,7 +10,7 @@
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="@integer/column_count"
+        android:numColumns="auto_fit"
         android:scrollbarStyle="outsideOverlay"
         android:clipToPadding="false"
         android:scrollbars="none"

@@ -18,17 +18,20 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by robin on 3/27/2016.
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     static final String DETAIL_URI = "URI";
-    private ImageView mPosterView;
-    private TextView mTitleView;
-    private TextView mRatingView;
-    private TextView mOverviewView;
-    private TextView mReleaseDateView;
+    @Bind(R.id.detail_poster_image) ImageView mPosterView;
+    @Bind(R.id.detail_title_text) TextView mTitleView;
+    @Bind(R.id.detail_rating_text) TextView mRatingView;
+    @Bind(R.id.detail_overview_text) TextView mOverviewView;
+    @Bind(R.id.detail_date_text) TextView mReleaseDateView;
 
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
@@ -49,11 +52,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mPosterView = (ImageView) rootView.findViewById(R.id.detail_poster_image);
-        mTitleView = (TextView) rootView.findViewById(R.id.detail_title_text);
-        mRatingView = (TextView) rootView.findViewById(R.id.detail_rating_text);
-        mOverviewView = (TextView) rootView.findViewById(R.id.detail_overview_text);
-        mReleaseDateView = (TextView) rootView.findViewById(R.id.detail_date_text);
+        ButterKnife.bind(this, rootView);
 
         return rootView;
     }
