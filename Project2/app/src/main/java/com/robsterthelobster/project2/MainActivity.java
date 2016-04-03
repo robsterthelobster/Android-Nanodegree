@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnI
     }
 
     @Override
-    public void onItemSelected(Uri movieUri) {
-        Intent intent = new Intent(this, DetailActivity.class).setData(movieUri);
+    public void onItemSelected(int movieID) {
+        Intent intent = new Intent(this, DetailActivity.class).putExtra(DetailFragment.DETAIL_ID, movieID);
         startActivity(intent);
     }
 }

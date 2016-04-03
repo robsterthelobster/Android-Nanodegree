@@ -32,7 +32,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(Uri movieUri);
+        public void onItemSelected(int movieID);
     }
 
 
@@ -63,11 +63,11 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                Uri uri = MovieContract.MovieEntry.buildMovieWithID(cursor.getInt(COL_ID));
+                int movieID = cursor.getInt(COL_ID);
 
                 try{
                     mCallback = (OnItemClickedListener) getActivity();
-                    mCallback.onItemSelected(uri);
+                    mCallback.onItemSelected(movieID);
                 }catch (ClassCastException e) {
                     throw new ClassCastException(getActivity().toString()
                             + " must implement OnItemClickedListener");

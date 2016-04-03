@@ -42,7 +42,7 @@ import retrofit2.http.Path;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    static final String DETAIL_URI = "URI";
+    static final String DETAIL_ID = "MOVIEID";
     @Bind(R.id.detail_poster_image) ImageView mPosterView;
     @Bind(R.id.detail_title_text) TextView mTitleView;
     @Bind(R.id.detail_rating_text) TextView mRatingView;
@@ -51,8 +51,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
+    private int movieID;
 
     static final String API_URL = "https://api.themoviedb.org/3/movie/";
+    MovieDBService service;
 
     public interface MovieDBService {
         @GET("{id}/videos")
@@ -81,7 +83,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         builder.interceptors().add(new MovieAPIInterceptor());
         OkHttpClient client = builder.build();
 
-
         // Set the custom client when building adapter
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_URL)
@@ -89,31 +90,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 .client(client)
                 .build();
 
-        MovieDBService service = retrofit.create(MovieDBService.class);
-
-        Call<ReviewModel> call = service.listReviews(157336);
-
-        call.enqueue(new Callback<ReviewModel>() {
-            @Override
-            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                System.out.println("Success");
-                if(response.body() != null){
-                    System.out.println("not null");
-                    for(Review trailer : response.body().getResults()){
-                        System.out.println(trailer.getUrl());
-                        System.out.println(response.body().toString());
-                    }
-                }else{
-                    System.out.println("null");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReviewModel> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+        service = retrofit.create(MovieDBService.class);
+      }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,7 +99,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+            movieID = arguments.getInt(DETAIL_ID);
+            mUri = MovieContract.MovieEntry.buildMovieWithID(movieID);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -201,4 +180,54 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {    }
 
+    private void fetchMovieReviews(int id){
+
+        Call<ReviewModel> call = service.listReviews(id);
+
+        call.enqueue(new Callback<ReviewModel>() {
+            @Override
+            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
+                System.out.println("Success");
+                if(response.body() != null){
+                    System.out.println("not null");
+                    for(Review review : response.body().getResults()){
+                        System.out.println(review.getUrl());
+                        System.out.println(response.body().toString());
+                    }
+                }else{
+                    System.out.println("null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewModel> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchMovieTrailers(int id){
+        Call<TrailerModel> call = service.listTrailers(id);
+
+        call.enqueue(new Callback<TrailerModel>() {
+            @Override
+            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                System.out.println("Success");
+                if(response.body() != null){
+                    System.out.println("not null");
+                    for(Trailer trailer : response.body().getTrailers()){
+                        System.out.println(trailer.getId());
+                        System.out.println(response.body().toString());
+                    }
+                }else{
+                    System.out.println("null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TrailerModel> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
