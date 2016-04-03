@@ -13,21 +13,21 @@ import java.util.List;
 public class TrailerModel {
 
     @SerializedName("id")
-    String id;
+    int id;
 
     @SerializedName("results")
     List<Trailer> trailers;
 
     @Override
     public String toString(){
+        return ""+id;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

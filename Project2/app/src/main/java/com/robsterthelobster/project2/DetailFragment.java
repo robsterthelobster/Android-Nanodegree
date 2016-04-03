@@ -2,7 +2,6 @@ package com.robsterthelobster.project2;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -13,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.robsterthelobster.project2.models.Review;
+import com.robsterthelobster.project2.models.ReviewModel;
 import com.robsterthelobster.project2.models.Trailer;
 import com.robsterthelobster.project2.models.TrailerModel;
 import com.robsterthelobster.project2.data.MovieContract;
@@ -52,9 +54,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     static final String API_URL = "https://api.themoviedb.org/3/movie/";
 
-    public interface MovieTrailerService {
+    public interface MovieDBService {
         @GET("{id}/videos")
         Call<TrailerModel> listTrailers(@Path("id") int id);
+
+        @GET("{id}/reviews")
+        Call<ReviewModel> listReviews(@Path("id") int id);
+    }
+
+    static class MovieAPIInterceptor implements Interceptor {
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            HttpUrl url = chain.request().url().newBuilder().addQueryParameter("api_key", BuildConfig.MOVIEDB_API_KEY).build();
+            Request request = chain.request().newBuilder().url(url).build();
+            return chain.proceed(request);
+        }
     }
 
     @Override
@@ -62,18 +77,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        Interceptor interceptor = new Interceptor() {
-
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                HttpUrl url = chain.request().url().newBuilder().addQueryParameter("api_key", BuildConfig.MOVIEDB_API_KEY).build();
-                Request request = chain.request().newBuilder().url(url).build();
-                return chain.proceed(request);
-            }
-        };
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.interceptors().add(interceptor);
+        builder.interceptors().add(new MovieAPIInterceptor());
         OkHttpClient client = builder.build();
 
 
@@ -84,25 +89,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 .client(client)
                 .build();
 
-        MovieTrailerService service = retrofit.create(MovieTrailerService.class);
+        MovieDBService service = retrofit.create(MovieDBService.class);
 
-        Call<TrailerModel> call = service.listTrailers(550);
+        Call<ReviewModel> call = service.listReviews(157336);
 
-        call.enqueue(new Callback<TrailerModel>() {
+        call.enqueue(new Callback<ReviewModel>() {
             @Override
-            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
                 System.out.println("Success");
                 if(response.body() != null){
-                    for(Trailer trailer : response.body().getTrailers()){
-                        System.out.println(trailer.getSite());
+                    System.out.println("not null");
+                    for(Review trailer : response.body().getResults()){
+                        System.out.println(trailer.getUrl());
+                        System.out.println(response.body().toString());
                     }
+                }else{
+                    System.out.println("null");
                 }
-
             }
 
             @Override
-            public void onFailure(Call<TrailerModel> call, Throwable t) {
-                System.out.println("Failed");
+            public void onFailure(Call<ReviewModel> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -178,7 +186,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             Picasso.with(getContext()) //
                     .load(url) //
                     .placeholder(R.drawable.no_poster_w185) //
-                            //.error(R.drawable.dog) //
+                    .error(R.drawable.no_poster_w185) //
                     .fit() //
                     .tag(getActivity()) //
                     .into(mPosterView);
