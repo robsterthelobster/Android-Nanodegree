@@ -26,7 +26,7 @@ public class Trailer {
     String site;
 
     @SerializedName("size")
-    String size;
+    Integer size;
 
     @SerializedName("type")
     String type;
@@ -79,11 +79,11 @@ public class Trailer {
         this.site = site;
     }
 
-    public String getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 

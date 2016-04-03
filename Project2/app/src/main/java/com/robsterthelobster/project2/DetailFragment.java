@@ -2,6 +2,7 @@ package com.robsterthelobster.project2;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -22,6 +23,7 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,13 +40,6 @@ import retrofit2.http.Path;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    public static final String API_URL = "https://api.themoviedb.org/3/movie/";
-
-    public interface MovieDBService{
-        @GET("{id}/videos?api_key="+BuildConfig.MOVIEDB_API_KEY)
-        Call<TrailerModel> listTrailers(@Path("id") int id);
-    }
-
     static final String DETAIL_URI = "URI";
     @Bind(R.id.detail_poster_image) ImageView mPosterView;
     @Bind(R.id.detail_title_text) TextView mTitleView;
@@ -55,18 +50,41 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
 
+    static final String API_URL = "https://api.themoviedb.org/3/movie/";
+
+    public interface MovieTrailerService {
+        @GET("{id}/videos")
+        Call<TrailerModel> listTrailers(@Path("id") int id);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        Interceptor interceptor = new Interceptor() {
+
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                HttpUrl url = chain.request().url().newBuilder().addQueryParameter("api_key", BuildConfig.MOVIEDB_API_KEY).build();
+                Request request = chain.request().newBuilder().url(url).build();
+                return chain.proceed(request);
+            }
+        };
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.interceptors().add(interceptor);
+        OkHttpClient client = builder.build();
+
+
         // Set the custom client when building adapter
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
 
-        MovieDBService service = retrofit.create(MovieDBService.class);
+        MovieTrailerService service = retrofit.create(MovieTrailerService.class);
 
         Call<TrailerModel> call = service.listTrailers(550);
 
