@@ -13,18 +13,37 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robsterthelobster.project2.models.Trailer;
+import com.robsterthelobster.project2.models.TrailerModel;
 import com.robsterthelobster.project2.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * Created by robin on 3/27/2016.
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    public static final String API_URL = "https://api.themoviedb.org/3/movie/";
+
+    public interface MovieDBService{
+        @GET("{id}/videos?api_key="+BuildConfig.MOVIEDB_API_KEY)
+        Call<TrailerModel> listTrailers(@Path("id") int id);
+    }
 
     static final String DETAIL_URI = "URI";
     @Bind(R.id.detail_poster_image) ImageView mPosterView;
@@ -40,6 +59,34 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        // Set the custom client when building adapter
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieDBService service = retrofit.create(MovieDBService.class);
+
+        Call<TrailerModel> call = service.listTrailers(550);
+
+        call.enqueue(new Callback<TrailerModel>() {
+            @Override
+            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                System.out.println("Success");
+                if(response.body() != null){
+                    for(Trailer trailer : response.body().getTrailers()){
+                        System.out.println(trailer.getSite());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TrailerModel> call, Throwable t) {
+                System.out.println("Failed");
+            }
+        });
     }
 
     @Override
