@@ -1,6 +1,7 @@
 package com.robsterthelobster.project2;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -62,6 +63,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Bind(R.id.detail_favorite_check) CheckBox mFavoriteCheck;
 
     private static final int DETAIL_LOADER = 0;
+    private static final int FAVORITE_LOADER = 1;
     private Uri mUri;
     private int movieID;
 
@@ -108,10 +110,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mFavoriteCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                ContentValues data = new ContentValues();
+                String where = MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + "=?";
+                String[] args = new String[] {String.valueOf(movieID)};
+
                 if(isChecked){
-
+                    System.out.println("checked");
+                    data.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movieID);
+                    data.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 1);
+                    getContext().getContentResolver().insert(
+                            MovieContract.FavoriteEntry.CONTENT_URI,
+                            data
+                    );
                 }else{
-
+                    System.out.println("unchecked");
+                    data.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 0);
+                    getContext().getContentResolver().update(
+                            MovieContract.FavoriteEntry.CONTENT_URI,
+                            data,
+                            where,
+                            args
+                    );
                 }
             }
         });
@@ -137,7 +157,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        LoaderManager loader = getLoaderManager();
+        loader.initLoader(DETAIL_LOADER, null, this);
+        loader.initLoader(FAVORITE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -156,7 +178,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_VOTE_COUNT,
             MovieContract.MovieEntry.COLUMN_VIDEO,
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
-            MovieContract.MovieEntry.COLUMN_FAVORITE
     };
 
     public static int COL_ID = 0;
@@ -173,35 +194,61 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static int COL_VOTE_COUNT = 11;
     public static int COL_VIDEO = 12;
     public static int COL_VOTE_AVERAGE = 13;
-    public static int COL_FAVORITE = 14;
+
+    final String[] COLUMNS = {
+            MovieContract.FavoriteEntry._ID,
+            MovieContract.FavoriteEntry.COLUMN_MOVIE_ID,
+            MovieContract.FavoriteEntry.COLUMN_FAVORITE
+    };
+    public static int COL_FAVORITE = 2;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        return new CursorLoader(getActivity(),
-                mUri,
-                MOVIE_COLUMNS,
-                null,
-                null,
-                null);
+        switch(id){
+            case DETAIL_LOADER:
+                return new CursorLoader(getActivity(),
+                        mUri,
+                        MOVIE_COLUMNS,
+                        null,
+                        null,
+                        null);
+            case FAVORITE_LOADER:
+                String selection = MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + "=?";
+                String[] selectionArgs = new String[] {String.valueOf(movieID)};
+                return new CursorLoader(getActivity(),
+                        MovieContract.FavoriteEntry.CONTENT_URI,
+                        COLUMNS,
+                        selection,
+                        selectionArgs,
+                        null);
+        }
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data != null && data.moveToFirst()){
-            String url = "http://image.tmdb.org/t/p/w185/" + data.getString(COL_POSTER);
-            Picasso.with(getContext()) //
-                    .load(url) //
-                    .placeholder(R.drawable.no_poster_w185) //
-                    .error(R.drawable.no_poster_w185) //
-                    .fit() //
-                    .tag(getActivity()) //
-                    .into(mPosterView);
+            switch(loader.getId()){
+                case DETAIL_LOADER:
+                    String url = "http://image.tmdb.org/t/p/w185/" + data.getString(COL_POSTER);
+                    Picasso.with(getContext()) //
+                            .load(url) //
+                            .placeholder(R.drawable.no_poster_w185) //
+                            .error(R.drawable.no_poster_w185) //
+                            .fit() //
+                            .tag(getActivity()) //
+                            .into(mPosterView);
 
-            mTitleView.setText(data.getString(COL_OG_TITLE));
-            mRatingView.setText(Utility.getRatingStr(data.getString(COL_VOTE_AVERAGE)));
-            mOverviewView.setText(data.getString(COL_OVERVIEW));
-            mReleaseDateView.setText(Utility.formatDateDMY(data.getString(COL_RELEASE)));
+                    mTitleView.setText(data.getString(COL_OG_TITLE));
+                    mRatingView.setText(Utility.getRatingStr(data.getString(COL_VOTE_AVERAGE)));
+                    mOverviewView.setText(data.getString(COL_OVERVIEW));
+                    mReleaseDateView.setText(Utility.formatDateDMY(data.getString(COL_RELEASE)));
+                    break;
+                case FAVORITE_LOADER:
+                    if(data.getInt(COL_FAVORITE) == 1){
+                        mFavoriteCheck.setChecked(true);
+                    }
+            }
         }
     }
 

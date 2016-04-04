@@ -155,7 +155,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
                 movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_COUNT, vote);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_VIDEO, video);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, average);
-                movieValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 0);
 
                 mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
             }
