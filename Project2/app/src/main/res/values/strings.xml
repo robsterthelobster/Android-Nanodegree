@@ -16,6 +16,8 @@
     <string name="pref_category_sort">Grid Layout</string>
     <string name="pref_title_sort">Sort by</string>
 
+    <string name="pref_favorite_check">favorite</string>
+
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_sort_key" translatable="false">pref_sort_key</string>
     <string name="title_activity_detail">MovieDetail</string>

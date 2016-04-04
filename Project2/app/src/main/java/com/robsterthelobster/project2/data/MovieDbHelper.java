@@ -33,7 +33,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                         MovieContract.MovieEntry.COLUMN_POPULARITY + " REAL NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_VOTE_COUNT + " INTEGER NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_VIDEO + " INTEGER NOT NULL, " +
-                        MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL" +
+                        MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL," +
+                        MovieContract.MovieEntry.COLUMN_FAVORITE + " INTEGER NOT NULL" +
                         " );";
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
     }

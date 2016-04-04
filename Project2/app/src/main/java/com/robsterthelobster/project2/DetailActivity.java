@@ -1,10 +1,16 @@
 package com.robsterthelobster.project2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 
 /**
  * Created by robin on 3/27/2016.
@@ -19,7 +25,7 @@ public class DetailActivity extends AppCompatActivity{
         if (savedInstanceState == null) {
 
             Bundle arguments = new Bundle();
-            arguments.putInt(DetailFragment.DETAIL_ID, getIntent().getIntExtra(DetailFragment.DETAIL_ID, -1));
+            arguments.putParcelable(DetailFragment.DETAIL_URI, getIntent().getData());
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
 

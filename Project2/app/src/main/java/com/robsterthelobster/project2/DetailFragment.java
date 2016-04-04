@@ -1,8 +1,12 @@
 package com.robsterthelobster.project2;
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -10,10 +14,13 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.robsterthelobster.project2.data.MovieContract;
 import com.robsterthelobster.project2.models.Review;
@@ -44,7 +51,7 @@ import retrofit2.http.Path;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    static final String DETAIL_ID = "MOVIEID";
+    static final String DETAIL_URI = "URI";
     @Bind(R.id.detail_poster_image) ImageView mPosterView;
     @Bind(R.id.detail_title_text) TextView mTitleView;
     @Bind(R.id.detail_rating_text) TextView mRatingView;
@@ -52,6 +59,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Bind(R.id.detail_date_text) TextView mReleaseDateView;
     @Bind(R.id.detail_trailer_list) ListView mTrailerView;
     @Bind(R.id.detail_review_list) ListView mReviewView;
+    @Bind(R.id.detail_favorite_check) CheckBox mFavoriteCheck;
 
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
@@ -82,7 +90,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-      }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,12 +98,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            movieID = arguments.getInt(DETAIL_ID);
-            mUri = MovieContract.MovieEntry.buildMovieWithID(movieID);
+            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+            movieID = (int) ContentUris.parseId(mUri);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
+
+        mFavoriteCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                }else{
+
+                }
+            }
+        });
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.interceptors().add(new MovieAPIInterceptor());
@@ -112,8 +131,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         fetchMovieReviews(movieID);
         fetchMovieTrailers(movieID);
-
-        System.out.println("MOVIE ID " + movieID);
 
         return rootView;
     }
@@ -138,7 +155,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieContract.MovieEntry.COLUMN_POPULARITY,
             MovieContract.MovieEntry.COLUMN_VOTE_COUNT,
             MovieContract.MovieEntry.COLUMN_VIDEO,
-            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_FAVORITE
     };
 
     public static int COL_ID = 0;
@@ -155,6 +173,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static int COL_VOTE_COUNT = 11;
     public static int COL_VIDEO = 12;
     public static int COL_VOTE_AVERAGE = 13;
+    public static int COL_FAVORITE = 14;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

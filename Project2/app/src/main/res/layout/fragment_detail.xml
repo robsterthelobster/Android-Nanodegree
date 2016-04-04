@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:button="@drawable/favorites_selector"
-                android:id="@+id/favorite_check"
+                android:id="@+id/detail_favorite_check"
                 android:layout_weight="8" />
 
         </LinearLayout>
