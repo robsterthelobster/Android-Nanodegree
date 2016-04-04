@@ -116,15 +116,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 String[] args = new String[] {String.valueOf(movieID)};
 
                 if(isChecked){
-                    System.out.println("checked");
-                    data.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movieID);
                     data.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 1);
-                    getContext().getContentResolver().insert(
+                    getContext().getContentResolver().update(
                             MovieContract.FavoriteEntry.CONTENT_URI,
-                            data
+                            data,
+                            where,
+                            args
                     );
                 }else{
-                    System.out.println("unchecked");
                     data.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 0);
                     getContext().getContentResolver().update(
                             MovieContract.FavoriteEntry.CONTENT_URI,
@@ -247,7 +246,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 case FAVORITE_LOADER:
                     if(data.getInt(COL_FAVORITE) == 1){
                         mFavoriteCheck.setChecked(true);
+                    }else{
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movieID);
+                        contentValues.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 0);
+                        getContext().getContentResolver().insert(
+                                MovieContract.FavoriteEntry.CONTENT_URI,
+                                contentValues
+                        );
                     }
+                    break;
             }
         }
     }
