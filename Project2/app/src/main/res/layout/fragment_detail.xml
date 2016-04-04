@@ -7,9 +7,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:showDividers="middle"
-        android:divider="?android:listDivider"
-        android:dividerPadding="16dp">
+        android:focusableInTouchMode="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,8 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/detail_date_text"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:paddingTop="16dp"/>
+                    android:textAppearance="?android:textAppearanceMedium" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +61,13 @@
                     android:paddingTop="16dp"
                     android:textAppearance="?android:textAppearanceMedium"/>
             </LinearLayout>
+
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,12 +75,44 @@
             android:id="@+id/detail_overview_text"
             android:padding="16dp" />
 
-        <ListView
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_trailer_list">
+            android:orientation="vertical">
 
-        </ListView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_trailer_text"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:padding="16dp"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_trailer_list">
+            </ListView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_review_text"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:padding="16dp"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_review_list">
+            </ListView>
+        </LinearLayout>
 
     </LinearLayout>
 

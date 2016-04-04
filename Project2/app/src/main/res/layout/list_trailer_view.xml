@@ -4,14 +4,11 @@
     android:layout_height="match_parent">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:src="@drawable/ic_play_arrow_24dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trailer 1"/>
+        android:drawableLeft="@drawable/ic_play_arrow_24dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:gravity="left"
+        android:padding="16dp"/>
 
 </LinearLayout>

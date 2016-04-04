@@ -47,7 +47,7 @@ final class ImageAdapter extends CursorAdapter {
         Picasso.with(mContext) //
                 .load(url) //
                 .placeholder(R.drawable.no_poster_w185) //
-                        //.error(R.drawable.dog) //
+                .error(R.drawable.no_poster_w185) //
                 .fit() //
                 .tag(mContext) //
                 .into(v);

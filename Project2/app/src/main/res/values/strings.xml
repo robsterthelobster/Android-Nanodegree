@@ -19,6 +19,7 @@
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_sort_key" translatable="false">pref_sort_key</string>
     <string name="title_activity_detail">MovieDetail</string>
-
+    <string name="detail_review_text">Reviews:</string>
+    <string name="detail_trailer_text">Trailers:</string>
 
 </resources>

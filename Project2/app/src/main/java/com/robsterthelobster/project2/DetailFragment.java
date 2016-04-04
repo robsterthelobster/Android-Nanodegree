@@ -2,8 +2,8 @@ package com.robsterthelobster.project2;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -11,17 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.robsterthelobster.project2.data.MovieContract;
 import com.robsterthelobster.project2.models.Review;
 import com.robsterthelobster.project2.models.ReviewModel;
 import com.robsterthelobster.project2.models.Trailer;
 import com.robsterthelobster.project2.models.TrailerModel;
-import com.robsterthelobster.project2.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,9 +31,9 @@ import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import retrofit2.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -48,6 +50,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Bind(R.id.detail_rating_text) TextView mRatingView;
     @Bind(R.id.detail_overview_text) TextView mOverviewView;
     @Bind(R.id.detail_date_text) TextView mReleaseDateView;
+    @Bind(R.id.detail_trailer_list) ListView mTrailerView;
+    @Bind(R.id.detail_review_list) ListView mReviewView;
 
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
@@ -78,19 +82,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.interceptors().add(new MovieAPIInterceptor());
-        OkHttpClient client = builder.build();
-
-        // Set the custom client when building adapter
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        service = retrofit.create(MovieDBService.class);
       }
 
     @Override
@@ -105,6 +96,24 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.interceptors().add(new MovieAPIInterceptor());
+        OkHttpClient client = builder.build();
+
+        // Set the custom client when building adapter
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        service = retrofit.create(MovieDBService.class);
+
+        fetchMovieReviews(movieID);
+        fetchMovieTrailers(movieID);
+
+        System.out.println("MOVIE ID " + movieID);
 
         return rootView;
     }
@@ -187,18 +196,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         call.enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                System.out.println("Success");
                 if(response.body() != null){
-                    System.out.println("not null");
-                    for(Review review : response.body().getResults()){
-                        System.out.println(review.getUrl());
-                        System.out.println(response.body().toString());
-                    }
-                }else{
-                    System.out.println("null");
+                    List<Review> reviews = response.body().getResults();
+                    mReviewView.setAdapter(new ReviewAdapter(getContext(), reviews));
+                    Utility.setListViewHeightBasedOnChildren(mReviewView);
                 }
             }
-
             @Override
             public void onFailure(Call<ReviewModel> call, Throwable t) {
                 Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
@@ -212,18 +215,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         call.enqueue(new Callback<TrailerModel>() {
             @Override
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                System.out.println("Success");
                 if(response.body() != null){
-                    System.out.println("not null");
-                    for(Trailer trailer : response.body().getTrailers()){
-                        System.out.println(trailer.getId());
-                        System.out.println(response.body().toString());
-                    }
-                }else{
-                    System.out.println("null");
+                    List<Trailer> trailers = response.body().getTrailers();
+                    mTrailerView.setAdapter(new TrailerAdapter(getContext(), trailers));
+                    Utility.setListViewHeightBasedOnChildren(mTrailerView);
                 }
             }
-
             @Override
             public void onFailure(Call<TrailerModel> call, Throwable t) {
                 Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
