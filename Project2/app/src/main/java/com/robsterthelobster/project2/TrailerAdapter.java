@@ -33,6 +33,9 @@ public class TrailerAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
+        if(mContext == null){
+            return convertView;
+        }
         Button button = (Button) convertView;
         if(button == null){
             button = new Button(mContext);

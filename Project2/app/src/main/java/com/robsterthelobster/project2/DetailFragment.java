@@ -264,7 +264,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
                 if(response.body() != null){
                     List<Review> reviews = response.body().getResults();
-                    mReviewView.setAdapter(new ReviewAdapter(getContext(), reviews));
+                    mReviewView.setAdapter(new ReviewAdapter(getActivity(), reviews));
                     Utility.setListViewHeightBasedOnChildren(mReviewView);
                 }
             }
@@ -283,7 +283,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
                 if(response.body() != null){
                     List<Trailer> trailers = response.body().getTrailers();
-                    mTrailerView.setAdapter(new TrailerAdapter(getContext(), trailers));
+                    mTrailerView.setAdapter(new TrailerAdapter(getActivity(), trailers));
                     Utility.setListViewHeightBasedOnChildren(mTrailerView);
                 }
             }
