@@ -2,12 +2,9 @@ package com.robsterthelobster.project2;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -21,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.robsterthelobster.project2.data.MovieContract;
 import com.robsterthelobster.project2.models.Review;
@@ -246,17 +242,19 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 case FAVORITE_LOADER:
                     if(data.getInt(COL_FAVORITE) == 1){
                         mFavoriteCheck.setChecked(true);
-                    }else{
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movieID);
-                        contentValues.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 0);
-                        getContext().getContentResolver().insert(
-                                MovieContract.FavoriteEntry.CONTENT_URI,
-                                contentValues
-                        );
                     }
                     break;
             }
+        }
+        //if the data is null, set up the favorite data
+        else if(loader.getId() == FAVORITE_LOADER){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.FavoriteEntry.COLUMN_MOVIE_ID, movieID);
+            contentValues.put(MovieContract.FavoriteEntry.COLUMN_FAVORITE, 0);
+            getContext().getContentResolver().insert(
+                    MovieContract.FavoriteEntry.CONTENT_URI,
+                    contentValues
+            );
         }
     }
 

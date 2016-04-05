@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Movie;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 /**
@@ -20,7 +20,24 @@ public class MovieProvider extends ContentProvider {
     private static final String numOfMovies = "20";
     static final int MOVIE = 100;
     static final int MOVIE_WITH_ID = 101;
+    static final int MOVIE_FAVORITE = 102;
     static final int FAVORITE = 200;
+
+    private static final SQLiteQueryBuilder movieFavoriteQueryBuilder;
+
+    static{
+        movieFavoriteQueryBuilder = new SQLiteQueryBuilder();
+
+        //This is an inner join which looks like
+        //weather INNER JOIN location ON weather.location_id = location._id
+        movieFavoriteQueryBuilder.setTables(
+                MovieContract.MovieEntry.TABLE_NAME + " INNER JOIN " +
+                        MovieContract.FavoriteEntry.TABLE_NAME +
+                        " ON " + MovieContract.MovieEntry.TABLE_NAME +
+                        "." + MovieContract.MovieEntry.COLUMN_ID +
+                        " = " + MovieContract.FavoriteEntry.TABLE_NAME +
+                        "." + MovieContract.FavoriteEntry.COLUMN_MOVIE_ID);
+    }
 
     @Override
     public boolean onCreate() {
@@ -60,6 +77,14 @@ public class MovieProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder
+                );
+                break;
+            }
+            case MOVIE_FAVORITE:
+            {
+                retCursor = mOpenHelper.getReadableDatabase().rawQuery(
+                        "SELECT movies._id, poster_path, id FROM movies, favorites " +
+                        "WHERE movies.id = favorites.movie_id AND favorites.favorite = 1", null
                 );
                 break;
             }
@@ -191,6 +216,7 @@ public class MovieProvider extends ContentProvider {
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
         matcher.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
         matcher.addURI(authority, MovieContract.PATH_FAVORITE, FAVORITE);
+        matcher.addURI(authority, MovieContract.PATH_MOVIE + "/favorites", MOVIE_FAVORITE);
 
         return matcher;
     }

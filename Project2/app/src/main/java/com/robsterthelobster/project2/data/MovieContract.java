@@ -51,6 +51,10 @@ public class MovieContract {
             return CONTENT_URI.buildUpon().appendPath(""+movie_id).build();
         }
 
+        public static Uri buildMovieFavorites(){
+            return CONTENT_URI.buildUpon().appendPath("favorites").build();
+        }
+
         public static String getIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }

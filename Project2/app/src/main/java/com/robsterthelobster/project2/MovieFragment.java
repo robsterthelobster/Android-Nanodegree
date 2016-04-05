@@ -40,6 +40,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        updateMovies();
     }
 
     @Override
@@ -94,17 +96,19 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void onSortingChanged(){
-        updateMovies();
         getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
     }
 
     private void updateMovies(){
         FetchMovieTask task = new FetchMovieTask(getActivity());
-        task.execute(Utility.getSortType(getActivity()));
+        String sort = Utility.getSortType(getActivity());
+        if(!sort.equals(getString(R.string.pref_sort_favorite))) {
+            task.execute(Utility.getSortType(getActivity()));
+        }
     }
 
     private static final String[] projection = {
-            MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_POSTER_PATH,
             MovieContract.MovieEntry.COLUMN_ID
     };
@@ -116,13 +120,23 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = "";
         String sort = Utility.getSortType(getActivity());
+
+        Uri movieURI = MovieContract.MovieEntry.CONTENT_URI;
+        String selection = MovieContract.FavoriteEntry.COLUMN_MOVIE_ID + "=?" + " AND " + MovieContract.FavoriteEntry.COLUMN_FAVORITE + "=?";
+        String[] selectionArgs = new String[] {MovieContract.MovieEntry.COLUMN_ID, "1"};
+
         if(sort.equals(getString(R.string.pref_sort_popular))){
             sortOrder = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
         }else if(sort.equals(getString(R.string.pref_sort_top))){
             sortOrder = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        }else if(sort.equals(getString(R.string.pref_sort_favorite))){
+            return new CursorLoader(getActivity(),
+                    MovieContract.MovieEntry.buildMovieFavorites(),
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null);
         }
-
-        Uri movieURI = MovieContract.MovieEntry.CONTENT_URI;
 
         return new CursorLoader(getActivity(),
                 movieURI,
