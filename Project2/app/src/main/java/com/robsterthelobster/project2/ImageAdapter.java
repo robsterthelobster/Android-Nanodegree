@@ -41,16 +41,17 @@ final class ImageAdapter extends CursorAdapter {
         }
 
         // Get the image URL for the current position.
-        String url = urls.get(cursor.getPosition());
 
-        // Trigger the download of the URL asynchronously into the image view.
-        Picasso.with(mContext) //
-                .load(url) //
-                .placeholder(R.drawable.no_poster_w185) //
-                .error(R.drawable.no_poster_w185) //
-                .fit() //
-                .tag(mContext) //
-                .into(v);
+        if(urls.size() > 0){
+            String url = urls.get(cursor.getPosition());
+            Picasso.with(mContext) //
+                    .load(url) //
+                    .placeholder(R.drawable.no_poster_w185) //
+                    .error(R.drawable.no_poster_w185) //
+                    .fit() //
+                    .tag(mContext) //
+                    .into(v);
+        }
     }
 
     @Override
