@@ -96,6 +96,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void onSortingChanged(){
+        updateMovies();
         getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
     }
 
