@@ -206,6 +206,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         switch(id){
             case DETAIL_LOADER:
                 if(mUri == null){
+                    getView().setVisibility(View.GONE);
                     return null;
                 }
                 return new CursorLoader(getActivity(),
