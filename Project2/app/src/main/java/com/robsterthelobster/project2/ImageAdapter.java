@@ -1,7 +1,9 @@
 package com.robsterthelobster.project2;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -39,8 +41,6 @@ final class ImageAdapter extends CursorAdapter {
             v = new ImageView(mContext);
             v.setScaleType(CENTER_CROP);
         }
-
-        // Get the image URL for the current position.
 
         if(urls.size() > 0){
             String url = urls.get(cursor.getPosition());

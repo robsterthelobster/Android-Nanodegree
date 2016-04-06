@@ -11,6 +11,9 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnItemClickedListener{
 
     private static final String FRAGMENT_MOVIE_TAG = "MOVIE_FRAG_TAG";
+    private static final String FRAGMENT_DETAIL_TAG = "DETAIL_FRAG_TAG";
+
+    private boolean mDualPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,10 +21,17 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnI
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                   .replace(R.id.container, new MovieFragment(), FRAGMENT_MOVIE_TAG).commit();
+        if(findViewById(R.id.detail_frag) != null){
+            mDualPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detail_frag, new DetailFragment(), FRAGMENT_DETAIL_TAG).commit();
+            }
+        }else{
+            mDualPane = false;
         }
+
+        //MovieFragment movieFragment = ((MovieFragment) getSupportFragmentManager().findFragmentById(R.id.movie_frag));
     }
 
     @Override
@@ -47,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnI
     @Override
     protected void onResume(){
         super.onResume();
-        MovieFragment frag = (MovieFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_MOVIE_TAG);
+        MovieFragment frag = (MovieFragment) getSupportFragmentManager().findFragmentById(R.id.movie_frag);
         if(frag != null){
             frag.onSortingChanged();
         }
@@ -55,7 +65,18 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnI
 
     @Override
     public void onItemSelected(Uri movieUri) {
-        Intent intent = new Intent(this, DetailActivity.class).setData(movieUri);
-        startActivity(intent);
+        if(mDualPane){
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.DETAIL_URI, movieUri);
+
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.detail_frag, fragment, FRAGMENT_DETAIL_TAG).commit();
+        }else {
+            Intent intent = new Intent(this, DetailActivity.class).setData(movieUri);
+            startActivity(intent);
+        }
     }
 }

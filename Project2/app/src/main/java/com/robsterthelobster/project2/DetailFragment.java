@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Bind(R.id.detail_trailer_list) ListView mTrailerView;
     @Bind(R.id.detail_review_list) ListView mReviewView;
     @Bind(R.id.detail_favorite_check) CheckBox mFavoriteCheck;
+    @Bind(R.id.detail_review_title) TextView mReviewTitle;
+    @Bind(R.id.detail_trailer_title) TextView mTrailerTile;
 
+    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private static final int DETAIL_LOADER = 0;
     private static final int FAVORITE_LOADER = 1;
     private Uri mUri;
@@ -201,6 +205,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch(id){
             case DETAIL_LOADER:
+                if(mUri == null){
+                    return null;
+                }
                 return new CursorLoader(getActivity(),
                         mUri,
                         MOVIE_COLUMNS,
@@ -238,6 +245,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     mRatingView.setText(Utility.getRatingStr(data.getString(COL_VOTE_AVERAGE)));
                     mOverviewView.setText(data.getString(COL_OVERVIEW));
                     mReleaseDateView.setText(Utility.formatDateDMY(data.getString(COL_RELEASE)));
+                    mReviewTitle.setText(getString(R.string.detail_review_text));
+                    mTrailerTile.setText(getString(R.string.detail_trailer_text));
                     break;
                 case FAVORITE_LOADER:
                     if(data.getInt(COL_FAVORITE) == 1){
@@ -276,7 +285,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             }
             @Override
             public void onFailure(Call<ReviewModel> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "fetchMovieReviews failed");
             }
         });
     }
@@ -295,7 +304,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             }
             @Override
             public void onFailure(Call<TrailerModel> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to retrieve movie data", Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "fetchMovieTrailers failed");
             }
         });
     }

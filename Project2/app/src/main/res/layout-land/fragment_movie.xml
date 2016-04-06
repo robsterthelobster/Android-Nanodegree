@@ -5,13 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity$MovieFragment"
-    android:id="@+id/movie_frag"
     style="@style/AppTheme">
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
+        android:numColumns="3"
         android:scrollbarStyle="outsideOverlay"
         android:clipToPadding="false"
         android:scrollbars="none"
