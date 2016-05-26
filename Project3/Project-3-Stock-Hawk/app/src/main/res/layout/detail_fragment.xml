@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.db.chart.view.LineChartView
+        xmlns:chart="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/linechart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        chart:paddingStart="5dp"
+        chart:paddingEnd="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text = "Loading chart data..."
+        android:gravity="center"
+        android:text = "@string/chart_loading"
+        android:id="@+id/chart_loading_view"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:text = "Error displaying chart"
+        android:text = "@string/chart_display_error"
+        android:id="@+id/chart_empty_view"
+        android:visibility="invisible"/>
+
+</FrameLayout>

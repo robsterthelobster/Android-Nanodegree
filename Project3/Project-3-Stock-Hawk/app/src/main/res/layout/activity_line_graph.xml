@@ -1,12 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_containter"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.db.chart.view.LineChartView
-        xmlns:chart="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/linechart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</FrameLayout>
+    android:layout_height="match_parent"
+    tools:context=".ui.DetailActivity"
+    tools:ignore="MergeRootFrame" />
