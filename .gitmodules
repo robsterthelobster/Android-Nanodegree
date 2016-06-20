@@ -1,5 +1,5 @@
 [submodule "Build-It-Bigger"]
-	path = Build-It-Bigger
+	path = Project4/Build-It-Bigger
 	url = https://github.com/tripleducke/Build-It-Bigger
 [submodule "Capstone-Project"]
 	path = Capstone-Project
